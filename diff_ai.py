@@ -4,7 +4,8 @@ import requests
 import argparse
 
 # ===== 建議：產品化，直接透過 server 呼叫 OpenAI API =====
-SERVER_URL = "http://127.0.0.1:5000/analyze"
+#SERVER_URL = "http://127.0.0.1:5000/analyze"
+SERVER_URL = "http://firmware-diff-ai.onrender.com:5000/analyze"
 
 def read_file(path):
     with open(path, "r", encoding="utf-8", errors="ignore") as f:
