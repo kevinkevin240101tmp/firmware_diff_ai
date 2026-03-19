@@ -52,7 +52,7 @@ Diff:
         model="gpt-4.1-mini",
         messages=[{"role": "user", "content": prompt}],
         temperature=0.2,
-        timeout=60
+        timeout=60,
     )
 
     analysis_result = response.choices[0].message.content.strip()
