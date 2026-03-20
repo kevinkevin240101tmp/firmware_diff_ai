@@ -1,6 +1,7 @@
 import os
 from flask import Flask, request, jsonify
 from openai import OpenAI
+from datetime import datetime
 
 app = Flask(__name__)
 
@@ -24,6 +25,35 @@ def load_keys():
         pass
     return keys
 
+#def check_and_update_usage(key, limit=20):
+def check_and_update_usage(key, limit=3):
+    today = datetime.now().strftime("%Y-%m-%d")
+    usage = {}
+
+    try:
+        with open("usage.txt") as f:
+            for line in f:
+                k, d, count = line.strip().split("|")
+                usage[(k, d)] = int(count)
+    except:
+        pass
+
+    current = usage.get((key, today), 0)
+
+    if current >= limit:
+        return False
+
+    usage[(key, today)] = current + 1
+
+    try:
+        with open("usage.txt", "w") as f:
+            for (k, d), c in usage.items():
+                f.write(f"{k}|{d}|{c}\n")
+    except:
+        pass
+
+    return True
+
 @app.route("/analyze", methods=["POST"])
 def analyze():
     data = request.json
@@ -33,6 +63,9 @@ def analyze():
     keys = load_keys()
     if key not in keys:
         return jsonify({"status": "DENY", "message": "Invalid key"}), 403
+
+    if not check_and_update_usage(key):
+        return jsonify({"status": "DENY", "message": "Daily limit reached"}), 403
 
     # 呼叫 OpenAI API 進行分析
     prompt = f"""
