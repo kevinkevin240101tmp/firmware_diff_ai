@@ -25,7 +25,8 @@ def load_keys():
         pass
     return keys
 
-def check_and_update_usage(key, limit=20):
+#def check_and_update_usage(key, limit=20):
+def check_and_update_usage(key, limit=3):
     today = datetime.now().strftime("%Y-%m-%d")
     usage = {}
 
