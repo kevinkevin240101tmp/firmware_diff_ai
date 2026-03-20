@@ -3,6 +3,7 @@ from flask import Flask, request, jsonify
 from openai import OpenAI
 from datetime import datetime
 from utils import generate_html
+from utils import DEBUG
 
 app = Flask(__name__)
 
@@ -107,12 +108,25 @@ Diff:
 # ===== 新增測試 usage.txt 的 route（安全用，正式可移除） =====
 @app.route("/usage_check", methods=["GET"])
 def usage_check():
+    if not DEBUG:
+        return "Not allowed", 403
+
     try:
         with open("usage.txt") as f:
             content = f.read()
     except FileNotFoundError:
-        return "usage.txt not found"
+        content = "usage.txt not found"
+
     return generate_html(content, title="Usage")
+
+@app.route("/reset_usage", methods=["POST"])
+def reset_usage():
+    if not DEBUG:
+        return "Not allowed", 403
+
+    with open("usage.txt", "w") as f:
+        f.write("")
+    return "usage reset OK"
 
 if __name__ == "__main__":
     # Render.com 會提供 PORT 環境變數

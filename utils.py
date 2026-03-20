@@ -1,3 +1,6 @@
+# DEBUG = True / False
+DEBUG = True
+
 def generate_html(content, title="Report"):
     return f"""<!DOCTYPE html>
 <html lang="en">
