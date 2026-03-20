@@ -2,6 +2,7 @@ import os
 from flask import Flask, request, jsonify
 from openai import OpenAI
 from datetime import datetime
+from utils import generate_html
 
 app = Flask(__name__)
 
@@ -111,7 +112,7 @@ def usage_check():
             content = f.read()
     except FileNotFoundError:
         return "usage.txt not found"
-    return f"<pre>{content}</pre>"
+    return generate_html(content, title="Usage")
 
 if __name__ == "__main__":
     # Render.com 會提供 PORT 環境變數

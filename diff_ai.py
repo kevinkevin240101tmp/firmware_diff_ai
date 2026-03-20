@@ -2,6 +2,7 @@ import sys
 import difflib
 import requests
 import argparse
+from utils import generate_html
 
 # ===== 建議：產品化，直接透過 server 呼叫 OpenAI API =====
 #SERVER_URL = "http://127.0.0.1:5000/analyze"
@@ -50,19 +51,13 @@ def main():
     result = analyze_diff_server(diff_text, args.key)
     print(result)
 
-    with open("report.html", "w", encoding="utf-8") as f:
-        f.write(f"""
-    <html>
-    <head><meta charset="utf-8"><title>Diff Report</title></head>
-    <body>
-    <h2>DIFF</h2>
-    <pre>{diff_text}</pre>
+    html_content = generate_html(
+        f"=== DIFF ===\n{diff_text}\n\n=== AI 分析 ===\n{result}",
+        title="Diff Report"
+    )
 
-    <h2>AI 分析</h2>
-    <pre>{result}</pre>
-    </body>
-    </html>
-    """)
+    with open("report.html", "w", encoding="utf-8") as f:
+        f.write(html_content)
 
     print("\n[OK] report.html 已產生")
 
