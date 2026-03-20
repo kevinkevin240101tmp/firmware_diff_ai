@@ -12,7 +12,17 @@ if not OPENAI_API_KEY:
 client = OpenAI(api_key=OPENAI_API_KEY)
 
 # 最小 product key 列表
-VALID_KEYS = ["ABCD-1234", "XYZ-999"]
+def load_keys():
+    keys = {}
+    try:
+        with open("db.txt") as f:
+            for line in f:
+                if ":" in line:
+                    uid, pwd = line.strip().split(":", 1)
+                    keys[pwd] = uid
+    except:
+        pass
+    return keys
 
 @app.route("/analyze", methods=["POST"])
 def analyze():
@@ -20,7 +30,8 @@ def analyze():
     key = data.get("key")
     diff = data.get("diff")
 
-    if key not in VALID_KEYS:
+    keys = load_keys()
+    if key not in keys:
         return jsonify({"status": "DENY", "message": "Invalid key"}), 403
 
     # 呼叫 OpenAI API 進行分析
@@ -63,3 +74,4 @@ if __name__ == "__main__":
     # Render.com 會提供 PORT 環境變數
     port = int(os.environ.get("PORT", 5000))
     app.run(host="0.0.0.0", port=port)
+
