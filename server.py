@@ -25,8 +25,7 @@ def load_keys():
         pass
     return keys
 
-#def check_and_update_usage(key, limit=20):
-def check_and_update_usage(key, limit=3):
+def check_and_update_usage(key, limit=20):
     today = datetime.now().strftime("%Y-%m-%d")
     usage = {}
 
@@ -103,8 +102,17 @@ Diff:
 
     return jsonify({"status": "OK", "result": analysis_result})
 
+# ===== 新增測試 usage.txt 的 route（安全用，正式可移除） =====
+@app.route("/usage_check", methods=["GET"])
+def usage_check():
+    try:
+        with open("usage.txt") as f:
+            content = f.read()
+    except FileNotFoundError:
+        return "usage.txt not found"
+    return f"<pre>{content}</pre>"
+
 if __name__ == "__main__":
     # Render.com 會提供 PORT 環境變數
     port = int(os.environ.get("PORT", 5000))
     app.run(host="0.0.0.0", port=port)
-
