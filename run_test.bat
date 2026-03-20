@@ -5,8 +5,9 @@ REM 一鍵啟動 Flask server + CLI 測試
 REM ===============================
 
 REM 1️⃣ 設置 OpenAI API key (只在本 cmd 視窗有效)
-REM set OPENAI_API_KEY=sk-你的真實APIkey
-set OPENAI_API_KEY=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
+set OPENAI_API_KEY=sk-你的真實APIkey
+REM 在 github 不能放 open ai api key, 否則會被 open ai disabled api key
+REM set OPENAI_API_KEY=
 
 REM 2️⃣ 啟動 Flask server (新視窗)
 start "" c:\PortableApps\WinPython_3.13.11_x64\python\python.exe server.py
