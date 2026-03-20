@@ -30,7 +30,7 @@ del /f %EXE_NAME%.spec
 
 REM delete diff_ai.exe and copy dist_exe\diff_ai.exe to current directory. 
 del /f %EXE_NAME%.exe
-copy %DEST_DIR%\%EXE_NAME%.exe ./
+copy %DEST_DIR%\%EXE_NAME%.exe .\
 
 REM 7️⃣ 完成提示
 echo.
