@@ -1,2 +1,0 @@
-int timeout = 30;
-connect();
