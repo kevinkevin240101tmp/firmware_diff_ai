@@ -1,6 +1,10 @@
+# utils.py
+
+# ===== Global DEBUG Switch =====
 # DEBUG = True / False
 DEBUG = True
 
+# ===== HTML Generator (Dark Mode - ChatGPT Style) =====
 def generate_html(content, title="Report"):
     return f"""<!DOCTYPE html>
 <html lang="en">
@@ -9,12 +13,12 @@ def generate_html(content, title="Report"):
 <title>{title}</title>
 <style>
     body {{
-        background-color: #343541;
-        color: #ECECF1;
+        background-color: #212121;
+        color: #EDEDED;
         font-family: monospace;
     }}
     pre {{
-        background-color: #444654;
+        background-color: #303030;
         color: #F5F5F5;
         padding: 10px;
         border-radius: 6px;

@@ -1,4 +1,4 @@
-REM @echo off
+@echo off
 
 REM ===============================
 REM 一鍵啟動 Flask server + CLI 測試
