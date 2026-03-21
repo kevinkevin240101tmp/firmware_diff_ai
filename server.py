@@ -27,8 +27,28 @@ def load_keys():
         pass
     return keys
 
-#def check_and_update_usage(key, limit=20):
-def check_and_update_usage(key, limit=3):
+#def check_usage_limit(key, limit=20):
+def check_usage_limit(key, limit=3):
+    today = datetime.now().strftime("%Y-%m-%d")
+    usage = {}
+
+    try:
+        with open("usage.txt") as f:
+            for line in f:
+                k, d, count = line.strip().split("|")
+                usage[(k, d)] = int(count)
+    except:
+        pass
+
+    current = usage.get((key, today), 0)
+
+    if current >= limit:
+        return False
+
+    return True
+
+#def increment_usage(key, limit=20):
+def increment_usage(key, limit=3):
     today = datetime.now().strftime("%Y-%m-%d")
     usage = {}
 
@@ -66,7 +86,7 @@ def analyze():
     if key not in keys:
         return jsonify({"status": "DENY", "message": "Invalid key"}), 403
 
-    if not check_and_update_usage(key):
+    if not check_usage_limit(key):
         return jsonify({"status": "DENY", "message": "Daily limit reached"}), 403
 
     # 呼叫 OpenAI API 進行分析
@@ -94,16 +114,22 @@ Diff:
 {''.join(diff[:8000])}
 """
 
-    response = client.chat.completions.create(
-        model="gpt-4.1-mini",
-        messages=[{"role": "user", "content": prompt}],
-        temperature=0.2,
-        timeout=60
-    )
+    try:
+        response = client.chat.completions.create(
+            model="gpt-4.1-mini",
+            messages=[{"role": "user", "content": prompt}],
+            temperature=0.2,
+            timeout=60
+        )
 
-    analysis_result = response.choices[0].message.content.strip()
+        analysis_result = response.choices[0].message.content.strip()
 
-    return jsonify({"status": "OK", "result": analysis_result})
+        increment_usage(key)   # ✅ 成功後才扣
+
+        return jsonify({"status": "OK", "result": analysis_result})
+
+    except Exception as e:
+        return jsonify({"status": "ERROR", "message": str(e)}), 500
 
 # ===== 新增測試 usage.txt 的 route（安全用，正式可移除） =====
 @app.route("/usage_check", methods=["GET"])
