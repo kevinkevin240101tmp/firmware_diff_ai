@@ -78,6 +78,7 @@ def increment_usage(key):
 
 @app.route("/analyze", methods=["POST"])
 def analyze():
+    raise Exception("test error") # RXX for test, remove it after test!!!
     data = request.json
     key = data.get("key")
     diff = data.get("diff")
