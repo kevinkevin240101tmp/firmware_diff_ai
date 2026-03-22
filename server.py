@@ -5,6 +5,8 @@ from datetime import datetime
 from utils import generate_html
 from utils import DEBUG
 
+DAILY_LIMIT = 3
+
 app = Flask(__name__)
 
 # ===== 從環境變數讀取 OpenAI API key =====
