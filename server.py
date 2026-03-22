@@ -27,8 +27,7 @@ def load_keys():
         pass
     return keys
 
-#def check_usage_limit(key, limit=20):
-def check_usage_limit(key, limit=3):
+def check_usage_limit(key):
     today = datetime.now().strftime("%Y-%m-%d")
     usage = {}
 
@@ -42,13 +41,12 @@ def check_usage_limit(key, limit=3):
 
     current = usage.get((key, today), 0)
 
-    if current >= limit:
+    if current >= DAILY_LIMIT:
         return False
 
     return True
 
-#def increment_usage(key, limit=20):
-def increment_usage(key, limit=3):
+def increment_usage(key):
     today = datetime.now().strftime("%Y-%m-%d")
     usage = {}
 
@@ -62,7 +60,7 @@ def increment_usage(key, limit=3):
 
     current = usage.get((key, today), 0)
 
-    if current >= limit:
+    if current >= DAILY_LIMIT:
         return False
 
     usage[(key, today)] = current + 1

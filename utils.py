@@ -4,6 +4,8 @@
 # DEBUG = True / False
 DEBUG = False
 
+DAILY_LIMIT = 3
+
 # ===== HTML Generator (Dark Mode - ChatGPT Style) =====
 def generate_html(content, title="Report"):
     return f"""<!DOCTYPE html>
