@@ -2,7 +2,7 @@
 
 # ===== Global DEBUG Switch =====
 # DEBUG = True / False
-DEBUG = False
+DEBUG = True
 
 # ===== HTML Generator (Dark Mode - ChatGPT Style) =====
 def generate_html(content, title="Report"):

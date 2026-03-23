@@ -1,3 +1,5 @@
+# server.py
+
 import os
 from flask import Flask, request, jsonify
 from openai import OpenAI
@@ -28,6 +30,51 @@ def load_keys():
     except:
         pass
     return keys
+
+def check_credits_limit(key):
+    credits = {}
+
+    try:
+        with open("credits.txt") as f:
+            for line in f:
+                k, count = line.strip().split("|")
+                credits[(k)] = int(count)
+    except:
+        pass
+
+    current = credits.get((key), 0)
+
+    if current == 0:
+        return False
+
+    return True
+
+def decrement_credits(key):
+    credits = {}
+
+    try:
+        with open("credits.txt") as f:
+            for line in f:
+                k, count = line.strip().split("|")
+                credits[(k)] = int(count)
+    except:
+        pass
+
+    current = credits.get((key), 0)
+
+    if current == 0:
+        return False
+
+    credits[key] = current - 1
+
+    try:
+        with open("credits.txt", "w") as f:
+            for (k), c in credits.items():
+                f.write(f"{k}|{c}\n")
+    except:
+        pass
+
+    return True
 
 def check_usage_limit(key):
     today = datetime.now().strftime("%Y-%m-%d")
@@ -86,6 +133,9 @@ def analyze():
     if key not in keys:
         return jsonify({"status": "DENY", "message": "Invalid key"}), 403
 
+    if not check_credits_limit(key):
+        return jsonify({"status": "DENY", "message": "Credits limit reached"}), 403
+
     if not check_usage_limit(key):
         return jsonify({"status": "DENY", "message": "Daily limit reached"}), 403
 
@@ -124,12 +174,26 @@ Diff:
 
         analysis_result = response.choices[0].message.content.strip()
 
+        decrement_credits(key)
         increment_usage(key)   # ✅ 成功後才扣
 
         return jsonify({"status": "OK", "result": analysis_result})
 
     except Exception as e:
         return jsonify({"status": "ERROR", "message": str(e)}), 500
+
+@app.route("/credits_check", methods=["GET"])
+def credits_check():
+    if not DEBUG:
+        return "Not allowed", 403
+
+    try:
+        with open("credits.txt") as f:
+            content = f.read()
+    except FileNotFoundError:
+        content = "credits.txt not found"
+
+    return generate_html(content, title="Credits")
 
 # ===== 新增測試 usage.txt 的 route（安全用，正式可移除） =====
 @app.route("/usage_check", methods=["GET"])
