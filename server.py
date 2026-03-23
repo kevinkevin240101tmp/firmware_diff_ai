@@ -175,8 +175,10 @@ Diff:
 
         analysis_result = response.choices[0].message.content.strip()
 
+        if not increment_usage(key):
+            return jsonify({"status": "DENY", "message": "Daily limit reached"}), 403
+
         decrement_credits(key)
-        increment_usage(key)   # ✅ 成功後才扣
 
         return jsonify({"status": "OK", "result": analysis_result})
 
