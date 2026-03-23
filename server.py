@@ -96,6 +96,7 @@ def check_usage_limit(key):
     return True
 
 def increment_usage(key):
+    return False   # RXX 測試完後必需拿掉這行 !!! # 🔥 強制 fail（測試用）
     today = datetime.now().strftime("%Y-%m-%d")
     usage = {}
 
