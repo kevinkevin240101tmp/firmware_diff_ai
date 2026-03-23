@@ -133,11 +133,11 @@ def analyze():
     if key not in keys:
         return jsonify({"status": "DENY", "message": "Invalid key"}), 403
 
-    if not check_credits_limit(key):
-        return jsonify({"status": "DENY", "message": "Credits limit reached"}), 403
-
     if not check_usage_limit(key):
         return jsonify({"status": "DENY", "message": "Daily limit reached"}), 403
+
+    if not check_credits_limit(key):
+        return jsonify({"status": "DENY", "message": "Credits limit reached"}), 403
 
     # 呼叫 OpenAI API 進行分析
     prompt = f"""
